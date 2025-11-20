@@ -2,8 +2,12 @@ import React, { useState } from 'react'
 import { assets } from '../assets/assets.jsx'
 import { Link, useNavigate } from 'react-router-dom'
 import { MenuIcon, XIcon } from 'lucide-react'
+import { useUser, useClerk } from '@clerk/clerk-react'
 
 const Navbar = () => {
+
+    const { user } = useUser()
+    const { openSignIn } = useClerk()
 
     const [menuOpen, setMenuOpen] = useState(false)
     const navigate = useNavigate()
@@ -17,25 +21,25 @@ const Navbar = () => {
                 <div className='hidden sm:flex items-center gap-4 md:gap-8 max-md:text-sm text-gray-800'>
                     <Link to='/' onClick={() => scrollTo(0, 0)}> Home</Link>
                     <Link to='/marketplace' onClick={() => scrollTo(0, 0)}> Marketplace</Link>
-                    <Link to='/messages' onClick={() => scrollTo(0, 0)}> Messages</Link>
-                    <Link to='/my-listing' onClick={() => scrollTo(0, 0)}> My Listings</Link>
+                    <Link to={user ? '/messages' : '#'} onClick={() => user ? scrollTo(0, 0) : openSignIn()}>Messages</Link>
+                    <Link to={user ? '/my-listing' : '#'} onClick={() =>user ? scrollTo(0, 0) : openSignIn()}> My Listings</Link>
                 </div>
 
                 <div>
                     <button className='max-sm:hidden cursor-pointer px-8 py-2 bg-indigo-500 hover:bg-indigo-600 transition text-white rounded-full'>Login</button>
-                <MenuIcon onClick={() => setMenuOpen(true)} className='sm:hidden' />
+                    <MenuIcon onClick={() => setMenuOpen(true)} className='sm:hidden' />
                 </div>
 
             </div>
             {/* Mobile Menu */}
             <div className={`sm:hidden fixed inset-0 ${menuOpen ? 'w-full' : 'w-0'} overflow-hidden bg-white backdrop-blur shadow-xl rounded-lg z-[200] text-sm transition-all`}>
                 <div className='flex flex-col items-center justify-center h-full text-xl font-semibold gap-6 p-4'>
-                                  <Link to='/' onClick={() => scrollTo(0, 0)}> Home</Link>
+                    <Link to='/' onClick={() => scrollTo(0, 0)}> Home</Link>
                     <Link to='/marketplace' onClick={() => scrollTo(0, 0)}> Marketplace</Link>
                     <Link to='/messages' onClick={() => scrollTo(0, 0)}> Messages</Link>
                     <Link to='/my-listing' onClick={() => scrollTo(0, 0)}> My Listings</Link>
                     <button className=' cursor-pointer px-8 py-2 bg-indigo-500 hover:bg-indigo-600 transition text-white rounded-full'>Login</button>
-                 <XIcon onClick={() => setMenuOpen(false)} className='absolute size-8 right-6 top-6 text-gray-500 hover:text-gray-700 cursor-pointer' />
+                    <XIcon onClick={() => setMenuOpen(false)} className='absolute size-8 right-6 top-6 text-gray-500 hover:text-gray-700 cursor-pointer' />
                 </div>
             </div>
         </nav>
